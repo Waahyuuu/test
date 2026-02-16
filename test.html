@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Attendance - Dashboard</title>
+    <meta name="description" content="School attendance management dashboard">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style type="text/tailwindcss">
+        @theme inline {
+    --color-primary: var(--primary);
+    --color-primary-hover: var(--primary-hover);
+    --color-foreground: var(--foreground);
+    --color-muted: var(--muted);
+    --color-border: var(--border);
+    --color-accent-lime: var(--accent-lime);
+    --color-accent-teal: var(--accent-teal);
+    --color-accent-peach: var(--accent-peach);
+    --color-success: var(--success);
+    --color-success-light: var(--success-light);
+    --color-success-dark: var(--success-dark);
+    --color-error: var(--error);
+    --color-error-light: var(--error-light);
+    --color-error-dark: var(--error-dark);
+    --color-warning: var(--warning);
+    --color-warning-light: var(--warning-light);
+    --color-warning-dark: var(--warning-dark);
+    --color-info: var(--info);
+    --color-info-light: var(--info-light);
+    --color-info-dark: var(--info-dark);
+    --radius-card: 20px;
+    --radius-button: 16px;
+    --radius-icon: 22px;
+  }
+  :root {
+    --primary: #EF3F09;
+    --primary-hover: #d63608;
+    --foreground: #0C1C3C;
+    --muted: #F7F7F7;
+    --border: #DCDEDD;
+    --accent-lime: #C5E151;
+    --accent-teal: #82D9D7;
+    --accent-peach: #FAAC7B;
+    --success: #22C55E;
+    --success-light: #DCFCE7;
+    --success-dark: #166534;
+    --error: #EF4444;
+    --error-light: #FEE2E2;
+    --error-dark: #991B1B;
+    --warning: #EAB308;
+    --warning-light: #FEF9C3;
+    --warning-dark: #854D0E;
+    --info: #3B82F6;
+    --info-light: #DBEAFE;
+    --info-dark: #1E40AF;
+    --font-sans: 'Plus Jakarta Sans', sans-serif;
+  }
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+</style>
+</head>
+
+<body class="font-sans bg-white min-h-screen overflow-x-hidden">
+
+    <!-- Mobile Overlay -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 lg:hidden hidden" onclick="toggleSidebar()"></div>
+
+    <div class="flex min-h-screen">
+        <!-- SIDEBAR -->
+        <aside id="sidebar"
+            class="w-64 bg-muted fixed inset-y-0 left-0 flex flex-col z-50 transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
+            <!-- Logo -->
+            <div class="px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 bg-primary rounded-full flex items-center justify-center">
+                            <i data-lucide="graduation-cap" class="w-7 h-7 text-white"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-foreground text-lg font-bold">EduTrack</h1>
+                            <p class="text-foreground text-xs font-normal">Attendance App</p>
+                        </div>
+                    </div>
+                    <button onclick="toggleSidebar()" class="lg:hidden p-2 rounded-lg hover:bg-gray-200 cursor-pointer">
+                        <i data-lucide="x" class="w-5 h-5 text-gray-600"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="flex-1 px-6 py-4 space-y-6 overflow-y-auto">
+                <div>
+                    <h3 class="text-foreground text-xs font-semibold uppercase tracking-wider mb-3">Menu</h3>
+                    <div class="space-y-1">
+                        <a href="#" class="cursor-pointer">
+                            <div class="flex items-center gap-2.5 px-4 py-3 rounded-card bg-[#276874] text-white">
+                                <i data-lucide="layout-grid" class="w-5 h-5"></i>
+                                <span>Dashboard</span>
+                            </div>
+                        </a>
+                        <a href="#" class="group cursor-pointer">
+                            <div class="flex items-center gap-2.5 px-4 py-3 rounded-card hover:bg-gray-100">
+                                <i data-lucide="calendar-check"
+                                    class="w-5 h-5 text-gray-600 group-hover:text-primary"></i>
+                                <span class="text-foreground group-hover:text-primary">Attendance</span>
+                            </div>
+                        </a>
+                        <a href="#" class="group cursor-pointer">
+                            <div class="flex items-center gap-2.5 px-4 py-3 rounded-card hover:bg-gray-100">
+                                <i data-lucide="users" class="w-5 h-5 text-gray-600 group-hover:text-primary"></i>
+                                <span class="text-foreground group-hover:text-primary">Students</span>
+                            </div>
+                        </a>
+                        <a href="#" class="group cursor-pointer">
+                            <div class="flex items-center gap-2.5 px-4 py-3 rounded-card hover:bg-gray-100">
+                                <i data-lucide="file-bar-chart"
+                                    class="w-5 h-5 text-gray-600 group-hover:text-primary"></i>
+                                <span class="text-foreground group-hover:text-primary">Reports</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- User Profile -->
+            <div class="px-6 pb-6 mt-auto">
+                <div class="flex items-center gap-3">
+                    <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop"
+                        alt="Teacher" class="w-12 h-12 rounded-full object-cover flex-shrink-0">
+                    <div class="min-w-0 flex-1">
+                        <p class="text-foreground text-base font-semibold truncate">Ms. Sarah J.</p>
+                        <p class="text-foreground text-sm font-normal truncate">Class 10-A Teacher</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="flex-1 lg:ml-64 p-4 md:p-5 bg-white min-h-screen overflow-x-hidden">
+            <!-- Mobile Header -->
+            <div class="lg:hidden flex items-center justify-between mb-6 bg-muted rounded-card p-4">
+                <button onclick="toggleSidebar()" class="p-2 rounded-lg hover:bg-gray-200 cursor-pointer">
+                    <i data-lucide="menu" class="w-6 h-6 text-foreground"></i>
+                </button>
+                <h1 class="text-foreground text-lg font-bold">EduTrack</h1>
+                <div class="w-10"></div>
+            </div>
+
+            <!-- Page Header -->
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 md:mb-8">
+                <div>
+                    <h1 class="text-foreground text-2xl md:text-3xl font-bold mb-1">Attendance Overview</h1>
+                    <p class="text-gray-500 text-sm md:text-base">Today: Monday, Oct 24th</p>
+                </div>
+                <div class="grid grid-cols-2 gap-2 w-full md:w-auto md:flex md:items-center md:gap-3">
+                    <button
+                        class="flex items-center justify-center gap-2 px-4 py-2.5 border border-border rounded-button text-foreground font-medium hover:border-primary transition-all duration-200 cursor-pointer">
+                        <i data-lucide="calendar" class="w-4 h-4"></i>
+                        <span>History</span>
+                    </button>
+                    <button
+                        class="flex items-center justify-center gap-2 px-4 py-2.5 bg-primary text-white rounded-button font-medium hover:bg-primary-hover transition-all duration-200 cursor-pointer">
+                        <i data-lucide="check-circle" class="w-4 h-4"></i>
+                        <span>Mark Today</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- STATS GRID -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
+                <!-- Card 1 -->
+                <div class="bg-muted rounded-card pt-5 px-3 pb-3">
+                    <h3 class="text-foreground text-lg font-bold ml-3 mb-4">Total Students</h3>
+                    <div class="bg-white rounded-card p-5">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-foreground text-4xl font-extrabold mb-1">450</p>
+                                <p class="text-gray-500 text-sm font-medium">Enrolled</p>
+                            </div>
+                            <div class="w-16 h-16 bg-accent-lime rounded-icon flex items-center justify-center">
+                                <i data-lucide="users" class="w-7 h-7 text-foreground"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card 2 -->
+                <div class="bg-muted rounded-card pt-5 px-3 pb-3">
+                    <h3 class="text-foreground text-lg font-bold ml-3 mb-4">Present Today</h3>
+                    <div class="bg-white rounded-card p-5">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-foreground text-4xl font-extrabold mb-1">412</p>
+                                <p class="text-success text-sm font-medium">92% Attendance</p>
+                            </div>
+                            <div class="w-16 h-16 bg-accent-teal rounded-icon flex items-center justify-center">
+                                <i data-lucide="user-check" class="w-7 h-7 text-foreground"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card 3 -->
+                <div class="bg-muted rounded-card pt-5 px-3 pb-3">
+                    <h3 class="text-foreground text-lg font-bold ml-3 mb-4">Absent</h3>
+                    <div class="bg-white rounded-card p-5">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-foreground text-4xl font-extrabold mb-1">28</p>
+                                <p class="text-error text-sm font-medium">6% Absent</p>
+                            </div>
+                            <div class="w-16 h-16 bg-accent-peach rounded-icon flex items-center justify-center">
+                                <i data-lucide="user-x" class="w-7 h-7 text-foreground"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card 4 -->
+                <div class="bg-muted rounded-card pt-5 px-3 pb-3">
+                    <h3 class="text-foreground text-lg font-bold ml-3 mb-4">Late Arrival</h3>
+                    <div class="bg-white rounded-card p-5">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-foreground text-4xl font-extrabold mb-1">10</p>
+                                <p class="text-warning-dark text-sm font-medium">2% Late</p>
+                            </div>
+                            <div class="w-16 h-16 bg-accent-lime rounded-icon flex items-center justify-center">
+                                <i data-lucide="clock" class="w-7 h-7 text-foreground"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CHARTS SECTION -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6 md:mb-8">
+                <!-- Weekly Trend -->
+                <div class="lg:col-span-2 bg-muted rounded-card pt-5 px-3 pb-3">
+                    <h3 class="text-foreground text-lg font-bold ml-3 mb-4">Weekly Attendance Trend</h3>
+                    <div class="bg-white rounded-card p-4 md:p-5">
+                        <div class="w-full overflow-x-auto">
+                            <div class="min-w-70 h-64">
+                                <canvas id="weeklyChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Daily Breakdown -->
+                <div class="bg-muted rounded-card pt-5 px-3 pb-3">
+                    <h3 class="text-foreground text-lg font-bold ml-3 mb-4">Class 10-A Breakdown</h3>
+                    <div class="bg-white rounded-card p-4 md:p-5">
+                        <div class="w-full h-64 flex items-center justify-center">
+                            <canvas id="breakdownChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RECENT ACTIVITY LIST -->
+            <div class="bg-muted rounded-card pt-5 px-3 pb-3">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4 px-3">
+                    <h3 class="text-foreground text-lg font-bold">Recent Updates</h3>
+                    <a href="#" class="cursor-pointer"><span class="text-sm text-primary hover:underline">View All
+                            Students</span></a>
+                </div>
+                <div class="bg-white rounded-card p-5">
+
+                    <!-- List Item 1 -->
+                    <div class="flex gap-4 border-b border-gray-100 pb-4 mb-4">
+                        <div
+                            class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 font-bold text-lg flex-shrink-0">
+                            JD
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between mb-1">
+                                <h4 class="text-foreground text-sm font-bold truncate">John Doe</h4>
+                                <span
+                                    class="bg-success-light text-success-dark text-xs font-medium px-2 py-1 rounded-full">Present</span>
+                            </div>
+                            <p class="text-gray-500 text-xs mb-1">Class 10-A • Checked in at 08:05 AM</p>
+                        </div>
+                    </div>
+
+                    <!-- List Item 2 -->
+                    <div class="flex gap-4 border-b border-gray-100 pb-4 mb-4">
+                        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop"
+                            alt="Student" class="w-12 h-12 rounded-full object-cover flex-shrink-0">
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between mb-1">
+                                <h4 class="text-foreground text-sm font-bold truncate">Emma Watson</h4>
+                                <span
+                                    class="bg-error-light text-error-dark text-xs font-medium px-2 py-1 rounded-full">Absent</span>
+                            </div>
+                            <p class="text-gray-500 text-xs mb-1">Class 10-A • No notification received</p>
+                        </div>
+                    </div>
+
+                    <!-- List Item 3 -->
+                    <div class="flex gap-4 border-b border-gray-100 pb-4 mb-4">
+                        <div
+                            class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 font-bold text-lg flex-shrink-0">
+                            MP
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between mb-1">
+                                <h4 class="text-foreground text-sm font-bold truncate">Michael Park</h4>
+                                <span
+                                    class="bg-warning-light text-warning-dark text-xs font-medium px-2 py-1 rounded-full">Late</span>
+                            </div>
+                            <p class="text-gray-500 text-xs mb-1">Class 10-B • Arrived at 09:15 AM</p>
+                        </div>
+                    </div>
+
+                    <!-- List Item 4 -->
+                    <div class="flex gap-4">
+                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop"
+                            alt="Student" class="w-12 h-12 rounded-full object-cover flex-shrink-0">
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between mb-1">
+                                <h4 class="text-foreground text-sm font-bold truncate">Sarah Connor</h4>
+                                <span
+                                    class="bg-success-light text-success-dark text-xs font-medium px-2 py-1 rounded-full">Present</span>
+                            </div>
+                            <p class="text-gray-500 text-xs mb-1">Class 10-A • Checked in at 07:55 AM</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Page Not Found Modal -->
+    <div id="page-not-found-modal"
+        class="fixed inset-0 bg-black/50 z-[100] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-card p-6 max-w-sm w-full text-center">
+            <div class="w-16 h-16 bg-warning-light rounded-full flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="alert-triangle" class="w-8 h-8 text-warning-dark"></i>
+            </div>
+            <h3 class="text-foreground text-xl font-bold mb-2">Page Not Available</h3>
+            <p class="text-gray-500 text-sm mb-6">This page hasn't been created yet.</p>
+            <button onclick="closePageNotFoundModal()"
+                class="w-full px-4 py-2.5 bg-primary text-white rounded-button font-medium hover:bg-primary-hover transition-all duration-200 cursor-pointer">
+                Got it
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            lucide.createIcons();
+
+            document.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.getElementById('page-not-found-modal').classList.remove('hidden');
+                });
+            });
+
+            // Weekly Trend Chart
+            new Chart(document.getElementById('weeklyChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+                    datasets: [{
+                        label: 'Attendance Count',
+                        data: [420, 415, 440, 412, 435],
+                        backgroundColor: '#EF3F09',
+                        borderRadius: 8,
+                        barThickness: 24
+                    }]
+                },
+                options: {
+                    animation: false,
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 300
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+
+            // Breakdown Chart
+            new Chart(document.getElementById('breakdownChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Present', 'Absent', 'Late'],
+                    datasets: [{
+                        data: [28, 5, 2],
+                        backgroundColor: ['#22C55E', '#EF4444', '#EAB308'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    animation: false,
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '75%',
+                    plugins: {
+                        legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8 } }
+                    }
+                }
+            });
+        });
+
+        function closePageNotFoundModal() {
+            document.getElementById('page-not-found-modal').classList.add('hidden');
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+            document.body.classList.toggle('overflow-hidden');
+        }
+    </script>
+</body>
+
+</html>
